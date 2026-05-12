@@ -1,0 +1,5 @@
+finwiseai/lib/firebase_options.dart
+finwiseai/android/app/google-services.json
+dist/
+build/
+*.log
