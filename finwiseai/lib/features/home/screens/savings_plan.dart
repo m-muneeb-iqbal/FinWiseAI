@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../../core/constants/app_gradient.dart';
+
 class SavingsPlanScreen extends StatefulWidget {
   const SavingsPlanScreen({super.key});
 
@@ -37,7 +39,9 @@ class _SavingsPlanScreenState extends State<SavingsPlanScreen> {
           .collection('records')
           .doc(currentMonth);
 
-      await recordRef.set({'createdAt': FieldValue.serverTimestamp()}, SetOptions(merge: true));
+      await recordRef.set({
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
 
       await recordRef.collection('savings_goals').add({
         'goal_name': goalName,
@@ -67,76 +71,108 @@ class _SavingsPlanScreenState extends State<SavingsPlanScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Add Savings Goal", style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.teal,
-        elevation: 0,
-      ),
       body: Container(
-        padding: EdgeInsets.all(20),
+        height: double.infinity,
+        width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          gradient: Theme.of(context).extension<AppGradient>()!.gradient,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Create a new savings goal",
-              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.arrow_back),
+                          iconSize: 30,
+                          color: Colors.white,
+                        ),
+                      ),
 
-            ),
-            SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                labelText: "Goal Name",
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      const Text(
+                        "Savings Goal",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: "Goal Name",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onChanged: (value) => setState(() => goalName = value),
+                  ),
+                  SizedBox(height: 16),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: "Target Amount",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) =>
+                        setState(() => targetAmount = double.tryParse(value) ?? 0),
+                  ),
+                  SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: addSavingsGoal,
+                      icon: Icon(Icons.add_task_rounded),
+                      label: Text("Add Goal", style: TextStyle(fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/saved_savings_plans');
+                      },
+                      icon: Icon(Icons.list_alt_rounded, color: Colors.teal.shade800),
+                      label: Text(
+                        "View All Saved Plans",
+                        style: TextStyle(fontSize: 16, color: Colors.teal.shade800),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.teal.shade600),
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              onChanged: (value) => setState(() => goalName = value),
             ),
-            SizedBox(height: 16),
-            TextField(
-              decoration: InputDecoration(
-                labelText: "Target Amount",
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) => setState(() => targetAmount = double.tryParse(value) ?? 0),
-            ),
-            SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: addSavingsGoal,
-                icon: Icon(Icons.add_task_rounded),
-                label: Text("Add Goal", style: TextStyle(fontSize: 16)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal.shade700,
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/saved_savings_plans');
-                },
-                icon: Icon(Icons.list_alt_rounded, color: Colors.teal.shade800),
-                label: Text("View All Saved Plans", style: TextStyle(fontSize: 16, color: Colors.teal.shade800)),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.teal.shade600),
-                  padding: EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -370,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 30),
                         width: MediaQuery.of(context).size.width / 1,
                         decoration: BoxDecoration(
-                          color:  const Color(0xFFEEEEF1).withOpacity(0.8),
+                          color:  const Color.fromARGB(255, 238, 238, 241),
                           borderRadius: BorderRadius.circular(7)
                         ),
 
@@ -381,9 +381,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             const SizedBox(height: 12),
                             Text(
-                              'Month: $currentMonth', 
+                              'Month: $currentMonth',
+
+
                               style: TextStyle(
-                                color: const Color(0xFF898C8D), 
+                                color: const Color.fromARGB(255, 0, 0, 0), 
                                 fontSize: 18
                               )
                             ),
@@ -393,7 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               "Total Income: \$${totalIncome.toStringAsFixed(2)}", 
                               style: TextStyle(
                                 fontSize: 18, 
-                                color: const Color(0xFF898C8D)
+                                color: const Color.fromARGB(255, 0, 0, 0), 
                               )
                             ),
 

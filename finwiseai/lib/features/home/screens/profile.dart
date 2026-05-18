@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/constants/app_gradient.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -195,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _title() {
     return const Text(
-      "My Profile",
+      "Profile",
       style: TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.bold,
@@ -240,46 +242,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Container(
         height: double.infinity,
         width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF266DD1), // Darker shade
-              Color(0xFF90B3E9), // Primary theme color
-              Color(0xFFB3CFF1), // Lighter shade
-            ],
-          ),
+        decoration: BoxDecoration(
+          gradient: Theme.of(context).extension<AppGradient>()!.gradient,
         ),
         child: SafeArea(
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Column(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () => Navigator.pop(context), 
-                            icon: const Icon(Icons.arrow_back),
-                            iconSize: 30,
-                            color: Colors.white,
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                _title(),
-                              ],
-                            ),
-                          ),
-                        ],
+                    children: [
+                      Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(Icons.arrow_back),
+                          iconSize: 30,
+                          color: Colors.white,
+                        ),
                       ),
+
+                      const Text(
+                        "Profile",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                       const SizedBox(height: 20),
                       _entryField('Name', _controllerName, 'Enter Name'),
                       const SizedBox(height: 20),
@@ -327,9 +325,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       _updateButton(),
                     ],
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           )
         ),

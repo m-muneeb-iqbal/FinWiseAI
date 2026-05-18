@@ -19,12 +19,12 @@ class App extends StatelessWidget {
         extensions: [
           AppGradient(
             gradient: LinearGradient(
-              begin: Alignment.topRight,
+              begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFF266DD1), // Darker shade
-                Color(0xFF90B3E9), // Primary theme color
-                Color(0xFFB3CFF1), // Lighter shade
+                Color.fromARGB(255, 38, 109, 209), // Darker shade
+                Color.fromARGB(255, 144, 179, 233), // Primary theme color
+                Color.fromARGB(255, 179, 207, 241), // Lighter shade
               ],
             ),
           ),
@@ -35,12 +35,12 @@ class App extends StatelessWidget {
         extensions: [
           AppGradient(
             gradient: LinearGradient(
-              begin: Alignment.topRight,
+              begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFF0A1F4D), // Darker shade
-                Color(0xFF1A3A7A), // Primary theme color
-                Color(0xFF2A5299), // Lighter shade
+                Color.fromARGB(255, 11, 27, 58), // Darker shade
+                Color.fromARGB(255, 22, 59, 115), // Primary theme color
+                Color.fromARGB(255, 42, 90, 160), // Lighter shade
               ],
             ),
           ),
