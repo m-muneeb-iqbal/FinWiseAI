@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 
+import '../../../core/constants/app_gradient.dart';
 import '../../../core/widgets/manual_widgets.dart';
 import '../../../core/router/app_router.dart';
 
@@ -308,16 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
         
         decoration: BoxDecoration(
 
-          gradient: LinearGradient(
-
-            begin: Alignment.topRight,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF266DD1), // Darker shade
-              Color(0xFF90B3E9), // Primary theme color
-              Color(0xFFB3CFF1), // Lighter shade
-            ],
-          ),
+          gradient: Theme.of(context).extension<AppGradient>()!.gradient,
 
         ),
 
