@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
+import '../../../core/router/app_router.dart';
 import '../../../core/widgets/animated_snack_bar.dart';
 import '../../../core/widgets/manual_widgets.dart';
+import '../../../firebase_options.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -16,6 +21,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _controllerEmail = TextEditingController();
   bool _isLoading = false;
 
+  Future<List<String>> _fetchSignInMethodsForEmail(String email) async {
+    final response = await http.post(
+      Uri.parse(
+        'https://identitytoolkit.googleapis.com/v1/accounts:createAuthUri?key=${DefaultFirebaseOptions.currentPlatform.apiKey}',
+      ),
+      headers: const {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'identifier': email,
+        'continueUri': 'http://localhost',
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw FirebaseAuthException(
+        code: 'network-request-failed',
+        message: 'Unable to verify the sign-in method for this email.',
+      );
+    }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    final methods = <String>{
+      ...?((data['signInMethods'] as List?)?.cast<String>()),
+      ...?((data['signinMethods'] as List?)?.cast<String>()),
+      ...?((data['allProviders'] as List?)?.cast<String>()),
+    };
+
+    return methods.toList();
+  }
+
   Future <void> _resetPassword(BuildContext context) async{
 
     String email = _controllerEmail.text.trim();
@@ -27,9 +61,39 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         return;
       }
 
-      setState(() {
-        _isLoading = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+        });
+      }
+
+      final signInMethods = await _fetchSignInMethodsForEmail(email);
+
+      if (signInMethods.isEmpty) {
+        if (context.mounted) {
+          AnimatedSnackBar.show(
+            context,
+            'We could not find an account with that email address.',
+          );
+        }
+        return;
+      }
+
+      if (!signInMethods.contains('password')) {
+        if (context.mounted) {
+          AnimatedSnackBar.show(
+            context,
+            'This email is linked to Google Sign-In, so password reset is not available. We will take you back to login.',
+          );
+
+          await Future.delayed(const Duration(seconds: 2));
+
+          if (context.mounted) {
+            Navigator.pushReplacementNamed(context, AppRouter.login);
+          }
+        }
+        return;
+      }
 
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       AnimatedSnackBar.show(context, 'If this email is registered, a reset link has been sent to: $email');
@@ -68,9 +132,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       
     } 
     finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
 
     return;

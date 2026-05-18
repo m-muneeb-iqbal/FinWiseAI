@@ -5,9 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/widgets/manual_widgets.dart';
-
-// import 'SavingsPlanScreen.dart';
-// import 'ProfileScreen.dart';
+import '../../../core/router/app_router.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -234,10 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 decoration: BoxDecoration(color: Color(0xFF266DD1)),
               ),
-              // onTap: () => Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => ProfileScreen()),
-              // ),
+              onTap: () => Navigator.pushNamed(context, AppRouter.profile),
             ),
 
             Expanded(
@@ -267,11 +262,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       onTap: () {
-
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => SavingsPlanScreen()),
-                        // );
+                        Navigator.pushNamed(
+                          context,
+                          AppRouter.savingsPlan,
+                        );
                       },
                     ),
 
@@ -554,7 +548,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ElevatedButton(
                     
                       onPressed: () async {
-                        final result = await Navigator.pushNamed(context, '/add_expense');
+                        final result = await Navigator.pushNamed(context, AppRouter.addExpense);
                         if (result != null) {
                           Map<String, dynamic> expenseData = result as Map<String, dynamic>;
                           addExpense(expenseData['category'], expenseData['amount']);
