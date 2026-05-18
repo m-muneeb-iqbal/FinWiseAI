@@ -31,13 +31,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    if (_checkIfAccountIsDeleted() == true) {
-      userId = user?.uid;
-      currentMonth = getCurrentMonth();
-    if (user != null) {
-      fetchNumericUserId(user!.uid);
+    _initializeUserData();
+  }
+
+  Future<void> _initializeUserData() async {
+    if (!await _checkIfAccountIsDeleted()) {
+      return;
     }
-      currentMonth = getCurrentMonth();
+
+    userId = user?.uid;
+    currentMonth = getCurrentMonth();
+
+    if (user != null) {
+      await fetchNumericUserId(user!.uid);
+    }
+
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -392,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             const SizedBox(height: 12),
                             Text(
-                              "Total Income: \$${totalIncome.toStringAsFixed(2)}", 
+                              "Total Income: ${totalIncome.toStringAsFixed(2)} PKR", 
                               style: TextStyle(
                                 fontSize: 18, 
                                 color: const Color.fromARGB(255, 0, 0, 0), 
@@ -401,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                             SizedBox(height: 12),
                             Text(
-                              "Remaining Balance: \$${remainingBalance.toStringAsFixed(2)}", 
+                              "Remaining Balance: ${remainingBalance.toStringAsFixed(2)} PKR", 
                               style: TextStyle(
                                 fontSize: 21, 
                                 color:  Color(0xFF343740),
@@ -427,7 +437,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                   SizedBox(height: 10),
-                  Text("Spent: \$${spentAmount.toStringAsFixed(2)} / \$${totalIncome.toStringAsFixed(2)}", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
+                  Text("Spent: ${spentAmount.toStringAsFixed(2)} PKR / ${totalIncome.toStringAsFixed(2)} PKR", style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
                   SizedBox(height: 30),
                   // Buttons
                   Row(
