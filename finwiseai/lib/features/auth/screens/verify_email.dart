@@ -78,6 +78,9 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
       final String contact = args['contact'];
       final String email = args['email'];
 
+      await user.updateDisplayName(name);
+      await user.reload();
+
       int userId = await _getNextUserId();
 
       await FirebaseFirestore.instance

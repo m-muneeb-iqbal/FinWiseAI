@@ -70,6 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         String userId = currentUser.uid;
 
         Map<String, dynamic> updateData = {
+          if (name.isNotEmpty) 'Name': capitalizeName(name),
           if (contact.isNotEmpty) 'Contact': contact,
           'UpdatedAt': DateTime.now(),
         };
